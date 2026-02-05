@@ -1,0 +1,310 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Echo workspaceFolder",
+            "type": "shell",
+            "command": "echo ${workspaceFolder}"
+        },
+
+        {
+            "label": "build-all",         // Builds all projects 
+            "group": "build",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build-server",
+                "build-modules",
+                "build-tests"
+            ],
+            "windows": {
+                "dependsOn": [
+                    "build-server",
+                    "build-modules",
+                    "build-explorer",
+                    "build-tests"
+                ]
+            }
+        },
+
+        {
+            "label": "build-modules", 
+            "group": "build",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "build-yolo-net",
+                "build-portraitfilter",
+                "build-sentimentanalysis",
+                "build-demo_module_dotnetlongprocess",
+                "demo_module_dotnetsimple"
+            ]
+        },
+
+        // Build individual projects ===============================================================
+
+        {
+            "label": "build-server",    // Builds ONLY the API server, and not any backend analsysis or explorer apps
+             "type": "process",
+             "group": "build",
+             "command": "dotnet",
+             "args": [
+                "build",
+                "${workspaceFolder}/src/server",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        
+        {
+            "label": "build-server-release",    // Builds ONLY the API server, and not any backend analsysis or explorer apps
+             "type": "process",
+             "group": "build",
+             "command": "dotnet",
+             "args": [
+                "build",
+                "${workspaceFolder}/src/server",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "-c",
+                "Release"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+
+        {
+            "label": "build-parsejson",                  // Builds the ParseJSON utility
+             "type": "process",
+             "group": "build",
+             "command": "dotnet",
+             "args": [
+                "build",
+                "${workspaceFolder}/utils/ParseJSON",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+
+        {
+            "label": "build-parsejson-release",                  // Builds the ParseJSON utility
+             "type": "process",
+             "group": "build",
+             "command": "dotnet",
+             "args": [
+                "build",
+                "${workspaceFolder}/utils/ParseJSON",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "--configuration", "Release"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+
+        {
+            "label": "build-yolo-net",      // Builds ONLY the Yolo .NET analysis module
+            "type": "process",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/modules/ObjectDetectionYOLOv5Net",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary",
+                "--configuration", "Debug"
+            ],
+            "problemMatcher": "$msCompile"
+        },   
+
+        {
+            "label": "build-demo_module_dotnetlongprocess",      // Builds ONLY the demo .NET analysis module
+            "type": "process",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/demos/modules/DotNetLongProcess",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },   
+
+        {
+            "label": "demo_module_dotnetsimple",      // Builds ONLY the demo .NET analysis module
+            "type": "process",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/demos/modules/DotNetSimple",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },   
+
+        {
+            "label": "build-demo-go",      // Builds ONLY the demo Golang analysis module
+            "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "command": "go build \"${workspaceFolder}\\src\\demos\\clients\\Go\\object-detect.go\"",
+            "problemMatcher": [ "$go" ],
+            "detail": "Build the Go application"
+        },   
+
+        {
+            "label": "build-demo-node",
+            "type": "shell",
+            "command": "cd \"${workspaceFolder}\\src\\demos\\clients\\Node\\object-detect\" & npm install",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Install npm dependencies"
+        },
+
+        {
+            "label": "build-demo-rust",
+            "type": "shell",
+            "command": "cd \"${workspaceFolder}\\src\\demos\\clients\\Rust\\object-detect\" & cargo build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$rustc"],
+            "detail": "Build the Rust application"
+        },
+
+        {
+            "label": "run-demo-rust",
+            "type": "shell",
+            "command": "cd \"${workspaceFolder}\\src\\demos\\clients\\Rust\\object-detect\" & cargo run",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": ["$rustc"],
+            "detail": "Run the Rust application"
+        },
+
+        {
+            "label": "build-portraitfilter",      // Builds ONLY the .NET portrait filter  module
+            "type": "process",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/../CodeProject.AI-Modules/CodeProject.AI-PortraitFilter",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },   
+
+        {
+            "label": "build-sentimentanalysis",    // Builds ONLY the the .NET sentiment analysis module
+            "type": "process",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/../CodeProject.AI-Modules/CodeProject.AI-SentimentAnalysis",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },   
+
+        {
+            "label": "build-ai-explorer",      // Builds ONLY the Windows Forms .NET demo explorer (windows only)
+            "type": "process",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/demos/clients/Net/AiExplorer",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },   
+
+        {
+            "label": "build-json-client",      // Builds ONLY the Windows Forms .NET demo explorer (windows only)
+            "type": "process",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/demos/clients/Net/JsonApi",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },   
+
+        {
+            "label": "build-tests",      // Builds ONLY the .NET unit tests
+            "type": "process",
+            "group": "build",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/tests/QueueServiceTests",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },   
+
+        // Launch apps =============================================================================
+
+        {
+            "label": "stop-all",     // Builds and Launches the AI server for Linux
+            "group": "none",
+            "type": "process",
+            "command": "bash",
+            "args": [ "${workspaceFolder}/devops/utils/stop_all.sh" ],
+            "problemMatcher": "$msCompile",
+            "windows": {
+                "command": "${workspaceFolder}/devops/utils/stop_all.bat",
+                "args": []
+            }
+        },
+
+        // Misc ====================================================================================
+
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "group": "none",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/src/server/server.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "group": "none",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "${workspaceFolder}/src/server/server.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
